@@ -2,6 +2,7 @@
 import React, { useRef, useState } from "react";
 import Header from "../Header/Header";
 import ValidateUser from "../../utils/ValidateUser";
+import axios from "axios";
 
 const SignIn = () => {
   const [isSignnedUp, setIsSignnedUp] = useState(true);
@@ -12,7 +13,7 @@ const SignIn = () => {
   const userName = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
-  const handleValidateUser = () => {
+  const handleValidateUser = async () => {
     let errorMessage;
     if (isSignnedUp) {
       errorMessage = ValidateUser(
@@ -20,12 +21,42 @@ const SignIn = () => {
         email.current.value,
         password.current.value
       );
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/users/login",
+          {
+            email: email.current.value,
+            password: password.current.value,
+          }
+        );
+        console.log(response.data);
+        // Handle successful login (redirect, set cookies, etc.)
+      } catch (error) {
+        console.error("Login failed:", error.response.data);
+        setMessage(error.response.data.message);
+      }
     } else {
       errorMessage = ValidateUser(
         userName.current.value,
         email.current.value,
         password.current.value
       );
+      // For sign-up, call the register endpoint
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/users/register",
+          {
+            username: userName.current.value,
+            email: email.current.value,
+            password: password.current.value,
+          }
+        );
+        console.log(response.data);
+        // Handle successful registration (redirect, display success message, etc.)
+      } catch (error) {
+        console.error("Registration failed:", error.response.data);
+        setMessage(error.response.data.message);
+      }
     }
     if (errorMessage) {
       setMessage(errorMessage);
