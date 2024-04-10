@@ -6,8 +6,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const generateAccessTokenAndRefreshToken = async function (userId) {
   try {
     const user = await User.findById(userId);
-    const accessToken = await User.generateAccessToken();
-    const refreshToken = await User.generateRefreshToken();
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
@@ -20,15 +20,14 @@ const generateAccessTokenAndRefreshToken = async function (userId) {
   }
 };
 
-//------------------register user-----------------
 const registerUser = AsyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
-  if ([username, email, password].some((info) => info?.trim() === "")) {
+  if ([username, email, password].some((info) => info.trim() === "")) {
     throw new ApiError(401, "All fields are needed");
   }
   const existedUser = await User.findOne({
-    $or: [{ username: username }, { email: email }],
+    $or: [{ username }, { email }],
   });
   if (existedUser) {
     throw new ApiError(401, "username or email already existed");
@@ -41,6 +40,9 @@ const registerUser = AsyncHandler(async (req, res) => {
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
+  if (!createdUser) {
+    throw new ApiError(500, "Some problew occur while registering");
+  }
   return res
     .status(200)
     .json(new ApiResponse(200, createdUser, "user is successfully register"));
@@ -48,13 +50,17 @@ const registerUser = AsyncHandler(async (req, res) => {
 
 const logInUser = AsyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email: email });
-  if (!user) {
-    throw ApiError(401, "user not found");
+  if (!email) {
+    throw new ApiError(401, "email required for login");
   }
-  const isPasswordCorrect = await User.isPasswordCorrect(password);
-  if (!isPasswordCorrect) {
-    throw ApiError(402, "invalid password");
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(401, "user not found");
+  }
+  const isPasswordValid = await user.isPasswordCorrect(password);
+
+  if (!isPasswordValid) {
+    throw new ApiError(401, "invalid password");
   }
 
   const { accessToken, refreshToken } =
@@ -74,9 +80,11 @@ const logInUser = AsyncHandler(async (req, res) => {
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(
-      200,
-      { loggedInUser, accessToken, refreshToken },
-      "user is successfully logged in"
+      new ApiResponse(
+        200,
+        { loggedInUser, refreshToken, accessToken },
+        "user is successfully logged in"
+      )
     );
 });
 

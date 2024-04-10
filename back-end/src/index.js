@@ -12,6 +12,9 @@ connectDB()
       console.error("express can not interact with DB", error);
       throw error;
     });
+    app.get("/", (req, res) => {
+      res.send("server start");
+    });
     app.listen(process.env.PORT, () => {
       console.log(
         "server is running at port: http://localhost:",

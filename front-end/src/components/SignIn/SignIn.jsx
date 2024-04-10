@@ -1,8 +1,13 @@
+/* eslint-disable no-empty */
 /* eslint-disable no-unused-vars */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../Header/Header";
 import ValidateUser from "../../utils/ValidateUser";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser } from "../Redux/Slices/userSlice";
+import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 const SignIn = () => {
   const [isSignnedUp, setIsSignnedUp] = useState(true);
@@ -10,60 +15,91 @@ const SignIn = () => {
   const handleSignInBtn = () => {
     setIsSignnedUp(!isSignnedUp);
   };
-  const userName = useRef(null);
-  const email = useRef(null);
-  const password = useRef(null);
+  const userNameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  const userData = useSelector((store) => store.user.user);
+  const dispatch = useDispatch();
+  const cookies = new Cookies();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const accessToken = cookies.get("accessToken");
+    if (accessToken) {
+      navigate("/home");
+    }
+  }, []);
+
   const handleValidateUser = async () => {
     let errorMessage;
     if (isSignnedUp) {
       errorMessage = ValidateUser(
         null,
-        email.current.value,
-        password.current.value
+        emailRef.current.value,
+        passwordRef.current.value
       );
+    } else {
+      errorMessage = ValidateUser(
+        userNameRef.current.value,
+        emailRef.current.value,
+        passwordRef.current.value
+      );
+    }
+
+    if (errorMessage !== null) {
+      setMessage(errorMessage);
+      return;
+    }
+    setMessage(null);
+
+    if (isSignnedUp) {
+      // For sign-in, call the login endpoint
       try {
         const response = await axios.post(
           "http://localhost:8000/api/v1/users/login",
           {
-            email: email.current.value,
-            password: password.current.value,
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
           }
         );
-        console.log(response.data);
+        // console.log(response);
         // Handle successful login (redirect, set cookies, etc.)
+        const { username } = response.data.message.loggedInUser;
+        const { accessToken } = response.data.message;
+        localStorage.setItem("username", username);
+        const user = localStorage.getItem("username");
+        if (userData === null) dispatch(addUser(user));
+
+        cookies.set("accessToken", accessToken);
+        navigate("/home");
       } catch (error) {
-        console.error("Login failed:", error.response.data);
-        setMessage(error.response.data.message);
+        console.error("Login failed:", error);
       }
     } else {
-      errorMessage = ValidateUser(
-        userName.current.value,
-        email.current.value,
-        password.current.value
-      );
       // For sign-up, call the register endpoint
       try {
         const response = await axios.post(
           "http://localhost:8000/api/v1/users/register",
           {
-            username: userName.current.value,
-            email: email.current.value,
-            password: password.current.value,
+            username: userNameRef.current.value,
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
           }
         );
-        console.log(response.data);
+        // console.log(response);
         // Handle successful registration (redirect, display success message, etc.)
+        const { username } = response.data.message.loggedInUser;
+        const { accessToken } = response.data.message;
+        localStorage.setItem("username", username);
+        const user = localStorage.getItem("username");
+        if (userData === null) dispatch(addUser(user));
+        cookies.set("accessToken", accessToken);
+        navigate("/home");
       } catch (error) {
-        console.error("Registration failed:", error.response.data);
-        setMessage(error.response.data.message);
+        console.error("Registration failed:", error);
       }
     }
-    if (errorMessage) {
-      setMessage(errorMessage);
-      return;
-    }
-
-    setMessage(null);
   };
   return (
     <div>
@@ -80,26 +116,27 @@ const SignIn = () => {
         </h2>
         {!isSignnedUp && (
           <input
-            ref={userName}
+            ref={userNameRef}
             type="text"
             placeholder="Enter Your Name"
             className="p-2"
           />
         )}
         <input
-          ref={email}
+          ref={emailRef}
           type="email"
           placeholder="Enter Your e-mail"
           className="p-2"
         />
         <input
-          ref={password}
+          ref={passwordRef}
           type="password"
           placeholder="Enter Your password"
           className="p-2"
         />
         <div className="flex flex-col space-x-2">
           <button
+            type="button"
             className="bg-black text-white p-2"
             onClick={handleValidateUser}
           >
