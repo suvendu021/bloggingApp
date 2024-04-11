@@ -19,8 +19,11 @@ app.use(express.urlencoded({ limit: "10kb", extended: true }));
 
 app.use(express.static("public"));
 
-import { router } from "./routers/user.router.js";
+import { userRouter } from "./routers/user.router.js";
+import { blogRouter } from "./routers/blog.router.js";
 
-app.use("/api/v1/users", router);
+app.use("/api/v1/users", userRouter);
+
+app.use("/api/v1/blogs", blogRouter);
 
 export { app };

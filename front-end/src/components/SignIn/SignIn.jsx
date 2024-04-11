@@ -74,30 +74,38 @@ const SignIn = () => {
         cookies.set("accessToken", accessToken);
         navigate("/home");
       } catch (error) {
-        console.error("Login failed:", error);
+        console.error("Login error:", error);
+        // Handle errors from the backend API
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setMessage(error.response.data.message);
+        } else {
+          setMessage("An error occurred. Please try again later.");
+        }
       }
     } else {
       // For sign-up, call the register endpoint
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/users/register",
-          {
-            username: userNameRef.current.value,
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-          }
-        );
-        // console.log(response);
-        // Handle successful registration (redirect, display success message, etc.)
-        const { username } = response.data.message.loggedInUser;
-        const { accessToken } = response.data.message;
-        localStorage.setItem("username", username);
-        const user = localStorage.getItem("username");
-        if (userData === null) dispatch(addUser(user));
-        cookies.set("accessToken", accessToken);
-        navigate("/home");
+        await axios.post("http://localhost:8000/api/v1/users/register", {
+          username: userNameRef.current.value,
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
+        });
       } catch (error) {
-        console.error("Registration failed:", error);
+        console.error("Login error:", error);
+        // Handle errors from the backend API
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setMessage(error.response.data.message);
+        } else {
+          setMessage("An error occurred. Please try again later.");
+        }
       }
     }
   };

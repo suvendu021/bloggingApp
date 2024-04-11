@@ -4,6 +4,7 @@ import SignIn from "./components/SignIn/SignIn";
 import Home from "../src/components/MainPage/Home";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import BlogCreate from "./components/blog/BlogCreate";
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -13,6 +14,10 @@ const App = () => {
     {
       path: "/home",
       element: <ProtectedRoute Component={Home}></ProtectedRoute>,
+    },
+    {
+      path: "/blog",
+      element: <ProtectedRoute Component={BlogCreate}></ProtectedRoute>,
     },
   ]);
   return <RouterProvider router={router}></RouterProvider>;

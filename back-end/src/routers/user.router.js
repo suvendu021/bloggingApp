@@ -6,11 +6,11 @@ import {
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-const router = Router();
+const userRouter = Router();
 
-router.route("/register").post(registerUser);
-router.route("/login").post(logInUser);
+userRouter.route("/register").post(registerUser);
+userRouter.route("/login").post(logInUser);
 
-router.route("/logout").post(verifyJWT, logOutUser);
+userRouter.route("/logout").post(verifyJWT, logOutUser);
 
-export { router };
+export { userRouter };
