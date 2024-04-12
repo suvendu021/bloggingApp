@@ -1,1 +1,1 @@
-export const SERVER = "http://localhost:8000";
+export const SERVER = "https://blogging-app-server-seven.vercel.app";
