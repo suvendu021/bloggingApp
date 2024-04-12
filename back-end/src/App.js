@@ -6,7 +6,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "https://blogging-app-zeta.vercel.app",
     credentials: true,
     methods: ["GET", "POST"],
   })
