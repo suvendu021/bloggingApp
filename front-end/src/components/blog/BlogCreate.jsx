@@ -35,7 +35,7 @@ const BlogCreate = () => {
         error.response.data &&
         error.response.data.message
       ) {
-        setErrMessage(error.response.data.message);
+        setErrMessage(`*${error.response.data.message}`);
       } else {
         setErrMessage("An error occurred. Please try again later.");
       }
@@ -78,7 +78,9 @@ const BlogCreate = () => {
             className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight "
           />
         </div>
-        <p className="p-1 text-xs font-mono font-semibold">*{errMessage}</p>
+        <p className="p-1 text-red-500 text-xs font-mono font-semibold">
+          {errMessage}
+        </p>
         <div className="flex items-center justify-between">
           <button
             className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded "

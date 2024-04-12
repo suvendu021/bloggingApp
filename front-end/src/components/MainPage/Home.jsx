@@ -4,6 +4,7 @@ import Header from "../Header/Header";
 import { Link } from "react-router-dom";
 import BlogCard from "../blog/BlogCard";
 import { useFetchBlog } from "../hooks/useFetchBlog";
+import Footer from "../Footer/Footer";
 
 const Home = () => {
   const fetchedBlogs = useFetchBlog();
@@ -32,6 +33,7 @@ const Home = () => {
             </Link>
           ))}
       </div>
+      <Footer />
     </div>
   );
 };

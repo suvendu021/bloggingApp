@@ -5,9 +5,9 @@ import React from "react";
 const BlogCard = (props) => {
   const { title, description, photoURL } = props;
   return (
-    <div className="w-72 h-64 mx-6 bg-white shadow-md overflow-hidden rounded-lg cursor-pointer">
+    <div className="w-72 h-64 mx-6 bg-white shadow hover:shadow-md p-2 overflow-hidden rounded-lg cursor-pointer">
       <img
-        className="w-full h-36 object-cover object-center"
+        className="w-full h-36  rounded-md shadow border object-cover object-center"
         src={photoURL}
         alt="Blog Image"
       />
