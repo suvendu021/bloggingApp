@@ -5,11 +5,11 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { removeUser } from "../Redux/Slices/userSlice";
+import { SERVER } from "../../utils/Constant";
 
 const Header = () => {
   const { user } = useSelector((store) => store.user);
   // console.log(user);
-
   const [showMenuBtn, setShowMenuBtn] = useState(true);
   const handleMenu = () => {
     setShowMenuBtn(!showMenuBtn);
@@ -19,7 +19,7 @@ const Header = () => {
 
   const cookies = new Cookies();
   const api = axios.create({
-    baseURL: "http://localhost:8000/api/v1",
+    baseURL: `${SERVER}/api/v1`,
     withCredentials: true,
   });
   const handlesignOut = async () => {

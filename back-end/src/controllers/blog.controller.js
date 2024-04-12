@@ -58,4 +58,21 @@ const getBlogs = AsyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "get blogs successfully", blogs ? blogs : ""));
 });
 
-export { createBlog, getBlogs };
+const getParticularBlog = AsyncHandler(async (req, res) => {
+  const { blogId } = req.params;
+  // console.log(blogId);
+  if (!blogId) {
+    throw new ApiError(400, "blogId not present in blog ");
+  }
+
+  const result = await Blog.findById(blogId);
+  if (!result) {
+    throw new ApiError(500, "no blog found related ti this id");
+  }
+  // console.log(result);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "get blog successfully !!", result));
+});
+
+export { createBlog, getBlogs, getParticularBlog };

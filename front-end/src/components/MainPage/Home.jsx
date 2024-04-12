@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "../Header/Header";
 import { Link } from "react-router-dom";
 import BlogCard from "../blog/BlogCard";
@@ -19,15 +19,17 @@ const Home = () => {
           </button>
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20 justify-items-center">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20 mb-12 justify-items-center">
         {blogs &&
           blogs.map((blogItem) => (
-            <BlogCard
-              key={blogItem._id}
-              title={blogItem.title}
-              description={blogItem.description}
-              photoURL={blogItem.photo}
-            />
+            <Link to={`/blogRead/${blogItem._id}`} key={blogItem._id}>
+              <BlogCard
+                key={blogItem._id}
+                title={blogItem.title}
+                description={blogItem.description}
+                photoURL={blogItem.photo}
+              />
+            </Link>
           ))}
       </div>
     </div>

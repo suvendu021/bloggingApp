@@ -4,10 +4,11 @@ import React, { useEffect, useRef, useState } from "react";
 import Header from "../Header/Header";
 import ValidateUser from "../../utils/ValidateUser";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { addUser } from "../Redux/Slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import { SERVER } from "../../utils/Constant";
+import { useDispatch } from "react-redux";
+import { addUser } from "../Redux/Slices/userSlice";
 
 const SignIn = () => {
   const [isSignnedUp, setIsSignnedUp] = useState(true);
@@ -19,10 +20,9 @@ const SignIn = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
-  const userData = useSelector((store) => store.user.user);
-  const dispatch = useDispatch();
   const cookies = new Cookies();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const accessToken = cookies.get("accessToken");
@@ -48,7 +48,7 @@ const SignIn = () => {
     }
 
     if (errorMessage !== null) {
-      setMessage(errorMessage);
+      setMessage(`*${errorMessage}`);
       return;
     }
     setMessage(null);
@@ -56,21 +56,17 @@ const SignIn = () => {
     if (isSignnedUp) {
       // For sign-in, call the login endpoint
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/users/login",
-          {
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-          }
-        );
+        const response = await axios.post(`${SERVER}/api/v1/users/login`, {
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
+        });
         // console.log(response);
         // Handle successful login (redirect, set cookies, etc.)
         const { username } = response.data.message.loggedInUser;
         const { accessToken } = response.data.message;
         localStorage.setItem("username", username);
         const user = localStorage.getItem("username");
-        if (userData === null) dispatch(addUser(user));
-
+        dispatch(addUser(user));
         cookies.set("accessToken", accessToken);
         navigate("/home");
       } catch (error) {
@@ -81,7 +77,7 @@ const SignIn = () => {
           error.response.data &&
           error.response.data.message
         ) {
-          setMessage(error.response.data.message);
+          setMessage(`*${error.response.data.message}`);
         } else {
           setMessage("An error occurred. Please try again later.");
         }
@@ -89,11 +85,12 @@ const SignIn = () => {
     } else {
       // For sign-up, call the register endpoint
       try {
-        await axios.post("http://localhost:8000/api/v1/users/register", {
+        await axios.post(`${SERVER}/api/v1/users/register`, {
           username: userNameRef.current.value,
           email: emailRef.current.value,
           password: passwordRef.current.value,
         });
+        setMessage("Your Acoount is Created. Plz Click SignIn");
       } catch (error) {
         console.error("Login error:", error);
         // Handle errors from the backend API
@@ -102,7 +99,7 @@ const SignIn = () => {
           error.response.data &&
           error.response.data.message
         ) {
-          setMessage(error.response.data.message);
+          setMessage(`*${error.response.data.message}`);
         } else {
           setMessage("An error occurred. Please try again later.");
         }
@@ -150,7 +147,9 @@ const SignIn = () => {
           >
             {isSignnedUp ? "Sign-In" : "Sign-Up"}
           </button>
-          <p className="text-white font-semibold text-sm">{message}</p>
+          <p className="text-white font-semibold font-mono text-sm">
+            {message}
+          </p>
         </div>
 
         <p className="text-white cursor-pointer" onClick={handleSignInBtn}>
