@@ -4,13 +4,15 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "https://blogging-app-zeta.vercel.app",
-    credentials: true,
-    methods: ["GET", "POST"],
-  })
-);
+const corsOptions = {
+  origin: "https://blogging-app-zeta.vercel.app", // Allow requests only from this origin
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allow these HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Allow these headers
+  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+// Enable CORS with the defined options
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
