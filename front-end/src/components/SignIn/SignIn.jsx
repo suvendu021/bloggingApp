@@ -64,8 +64,8 @@ const SignIn = () => {
         // Handle successful login (redirect, set cookies, etc.)
         const { username } = response.data.message.loggedInUser;
         const { accessToken } = response.data.message;
-        localStorage.setItem("username", username);
-        const user = localStorage.getItem("username");
+        sessionStorage.setItem("username", username);
+        const user = sessionStorage.getItem("username");
         dispatch(addUser(user));
         cookies.set("accessToken", accessToken);
         navigate("/home");

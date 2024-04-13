@@ -9,7 +9,7 @@ import ReadBlog from "./components/blog/ReadBlog";
 import { useDispatch } from "react-redux";
 import { addUser } from "./components/Redux/Slices/userSlice";
 const App = () => {
-  const username = localStorage.getItem("username");
+  const username = sessionStorage.getItem("username");
   const dispatch = useDispatch();
 
   useEffect(() => {

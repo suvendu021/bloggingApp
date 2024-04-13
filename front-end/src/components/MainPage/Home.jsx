@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import BlogCard from "../blog/BlogCard";
 import { useFetchBlog } from "../hooks/useFetchBlog";
 import Footer from "../Footer/Footer";
+import ShimmerUI from "../../utils/ShimmerUI";
 
 const Home = () => {
   const fetchedBlogs = useFetchBlog();
@@ -21,7 +22,7 @@ const Home = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20 mb-12 justify-items-center">
-        {blogs &&
+        {blogs ? (
           blogs.map((blogItem) => (
             <Link to={`/blogRead/${blogItem._id}`} key={blogItem._id}>
               <BlogCard
@@ -31,7 +32,17 @@ const Home = () => {
                 photoURL={blogItem.photo}
               />
             </Link>
-          ))}
+          ))
+        ) : (
+          <>
+            <ShimmerUI />
+            <ShimmerUI />
+            <ShimmerUI />
+            <ShimmerUI />
+            <ShimmerUI />
+            <ShimmerUI />
+          </>
+        )}
       </div>
       <Footer />
     </div>
