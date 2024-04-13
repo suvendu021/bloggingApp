@@ -27,7 +27,7 @@ const Header = () => {
       await api.post("/users/logout");
       cookies.remove("accessToken");
       dispatch(removeUser());
-      localStorage.removeItem("username");
+      sessionStorage.removeItem("username");
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
