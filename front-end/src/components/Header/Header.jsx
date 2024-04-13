@@ -20,11 +20,18 @@ const Header = () => {
   const cookies = new Cookies();
   const api = axios.create({
     baseURL: SERVER,
-    withCredentials: true,
   });
   const handlesignOut = async () => {
     try {
-      await api.post("/api/v1/users/logout");
+      await api.post(
+        "/api/v1/users/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`, // Set the access token from localStorage in the Authorization header
+          },
+        }
+      );
       cookies.remove("accessToken");
       dispatch(removeUser());
       sessionStorage.removeItem("username");
