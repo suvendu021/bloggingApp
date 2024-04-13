@@ -19,12 +19,12 @@ const Header = () => {
 
   const cookies = new Cookies();
   const api = axios.create({
-    baseURL: `${SERVER}/api/v1`,
+    baseURL: SERVER,
     withCredentials: true,
   });
   const handlesignOut = async () => {
     try {
-      await api.post("/users/logout");
+      await api.post("/api/v1/users/logout");
       cookies.remove("accessToken");
       dispatch(removeUser());
       sessionStorage.removeItem("username");
