@@ -2,13 +2,12 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
 
 const ProtectedRoute = (props) => {
   const { Component } = props;
   const navigate = useNavigate();
-  const cookies = new Cookies();
-  const accessToken = cookies.get("accessToken");
+
+  const accessToken = sessionStorage.getItem("accessToken");
   useEffect(() => {
     if (!accessToken) {
       navigate("/");
