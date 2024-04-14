@@ -7,14 +7,14 @@ const ProtectedRoute = (props) => {
   const { Component } = props;
   const navigate = useNavigate();
 
-  const accessToken = sessionStorage.getItem("accessToken");
+  const username = sessionStorage.getItem("username");
   useEffect(() => {
-    if (!accessToken) {
+    if (!username) {
       navigate("/");
     }
   }, []);
 
-  return accessToken ? <Component /> : null;
+  return username ? <Component /> : null;
 };
 
 export default ProtectedRoute;

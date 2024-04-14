@@ -68,7 +68,7 @@ const SignIn = () => {
         const user = sessionStorage.getItem("username");
         dispatch(addUser(user));
         // cookies.set("accessToken", accessToken);
-        sessionStorage.setItem("accessToken", accessToken);
+        // sessionStorage.setItem("accessToken", accessToken);
         navigate("/home");
       } catch (error) {
         console.error("Login error:", error);

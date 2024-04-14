@@ -17,24 +17,15 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const cookies = new Cookies();
+  // const cookies = new Cookies();
   const api = axios.create({
     baseURL: SERVER,
   });
-  const accessToken = sessionStorage.getItem("accessToken");
+  // const accessToken = sessionStorage.getItem("accessToken");
   // console.log(accessToken);
   const handlesignOut = async () => {
     try {
-      await api.post(
-        "/api/v1/users/logout",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // Set the access token from localStorage in the Authorization header
-          },
-        }
-      );
-      cookies.remove("accessToken");
+      await api.post("/api/v1/users/logout");
       dispatch(removeUser());
       sessionStorage.removeItem("username");
       navigate("/");
