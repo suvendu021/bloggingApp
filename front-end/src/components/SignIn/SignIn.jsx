@@ -60,14 +60,14 @@ const SignIn = () => {
           email: emailRef.current.value,
           password: passwordRef.current.value,
         });
-        // console.log(response);
+        console.log(response);
         // Handle successful login (redirect, set cookies, etc.)
         const { username } = response.data.message.loggedInUser;
         const { accessToken } = response.data.message;
         sessionStorage.setItem("username", username);
         const user = sessionStorage.getItem("username");
         dispatch(addUser(user));
-        // cookies.set("accessToken", accessToken);
+        cookies.set("accessToken", accessToken);
         // sessionStorage.setItem("accessToken", accessToken);
         navigate("/home");
       } catch (error) {
