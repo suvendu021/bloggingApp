@@ -21,6 +21,8 @@ const Header = () => {
   const api = axios.create({
     baseURL: SERVER,
   });
+  const accessToken = sessionStorage.getItem("accessToken");
+  console.log(accessToken);
   const handlesignOut = async () => {
     try {
       await api.post(
@@ -28,7 +30,7 @@ const Header = () => {
         {},
         {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`, // Set the access token from localStorage in the Authorization header
+            Authorization: `Bearer ${accessToken}`, // Set the access token from localStorage in the Authorization header
           },
         }
       );
