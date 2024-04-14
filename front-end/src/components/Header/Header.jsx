@@ -22,7 +22,7 @@ const Header = () => {
     baseURL: SERVER,
   });
   const accessToken = sessionStorage.getItem("accessToken");
-  console.log(accessToken);
+  // console.log(accessToken);
   const handlesignOut = async () => {
     try {
       await api.post(
