@@ -20,6 +20,7 @@ const Header = () => {
   // const cookies = new Cookies();
   const api = axios.create({
     baseURL: SERVER,
+    withCredentials: true,
   });
   // const accessToken = sessionStorage.getItem("accessToken");
   // console.log(accessToken);
