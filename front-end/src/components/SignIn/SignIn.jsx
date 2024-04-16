@@ -55,24 +55,27 @@ const SignIn = () => {
 
     if (isSignnedUp) {
       // For sign-in, call the login endpoint
+
       try {
         const response = await axios.post(`${SERVER}/api/v1/users/login`, {
           email: emailRef.current.value,
           password: passwordRef.current.value,
         });
-        console.log(response);
+        // console.log(response);
+
         // Handle successful login (redirect, set cookies, etc.)
         const { username } = response.data.message.loggedInUser;
         const { accessToken } = response.data.message;
-        sessionStorage.setItem("username", username);
-        const user = sessionStorage.getItem("username");
+        localStorage.setItem("username", username);
+        const user = localStorage.getItem("username");
         dispatch(addUser(user));
         cookies.set("accessToken", accessToken);
-        // sessionStorage.setItem("accessToken", accessToken);
         navigate("/home");
       } catch (error) {
         console.error("Login error:", error);
+
         // Handle errors from the backend API
+
         if (
           error.response &&
           error.response.data &&
@@ -85,6 +88,7 @@ const SignIn = () => {
       }
     } else {
       // For sign-up, call the register endpoint
+
       try {
         await axios.post(`${SERVER}/api/v1/users/register`, {
           username: userNameRef.current.value,
@@ -94,7 +98,9 @@ const SignIn = () => {
         setMessage("Your Acoount is Created. Plz Click SignIn");
       } catch (error) {
         console.error("Login error:", error);
+
         // Handle errors from the backend API
+
         if (
           error.response &&
           error.response.data &&
@@ -108,7 +114,7 @@ const SignIn = () => {
     }
   };
   return (
-    <div>
+    <div className="h-screen">
       <Header />
       <form
         encType="multipart/form-data"

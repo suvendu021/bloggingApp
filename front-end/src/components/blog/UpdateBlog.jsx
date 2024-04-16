@@ -1,36 +1,46 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import axios from "axios";
-import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { SERVER } from "../../utils/Constant";
+import axios from "axios";
 
-const BlogCreate = () => {
+const UpdateBlog = () => {
+  const { blogId } = useParams();
   const navigate = useNavigate();
   const [errMessage, setErrMessage] = useState(null);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const imageRef = useRef(null);
-  const handleCreateBlog = async () => {
+  const handleSaveBlog = async () => {
     try {
-      await axios.post(
-        `${SERVER}/api/v1/blogs/createBlog`,
-        {
-          title: titleRef.current.value,
-          description: descriptionRef.current.value,
-          photo: imageRef.current.files[0],
-          author: localStorage.getItem("username"),
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Set Content-Type to multipart/form-data
-          },
-        }
-      );
-      navigate("/home");
+      const data = {};
+
+      if (titleRef.current && titleRef.current.value) {
+        data.title = titleRef.current.value;
+      }
+
+      if (descriptionRef.current && descriptionRef.current.value) {
+        data.description = descriptionRef.current.value;
+      }
+
+      if (
+        imageRef.current &&
+        imageRef.current.files &&
+        imageRef.current.files[0]
+      ) {
+        // If image is present, set it to the file object
+        data.photo = imageRef.current.files[0];
+      }
+
+      if (Object.keys(data).length > 0) {
+        // Send the data only if there is at least one field with a value
+        await axios.patch(`${SERVER}/api/v1/blogs/update/${blogId}`, data);
+        navigate("/home");
+      } else {
+        setErrMessage("plz enter atleast one field to update it !!!");
+      }
     } catch (error) {
       console.error("Blog Upload error:", error);
-      // Handle errors from the backend API
       if (
         error.response &&
         error.response.data &&
@@ -42,6 +52,7 @@ const BlogCreate = () => {
       }
     }
   };
+
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100 ">
       <form
@@ -86,9 +97,9 @@ const BlogCreate = () => {
           <button
             className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded "
             type="button"
-            onClick={handleCreateBlog}
+            onClick={handleSaveBlog}
           >
-            Create Blog
+            Save
           </button>
         </div>
       </form>
@@ -96,4 +107,4 @@ const BlogCreate = () => {
   );
 };
 
-export default BlogCreate;
+export default UpdateBlog;

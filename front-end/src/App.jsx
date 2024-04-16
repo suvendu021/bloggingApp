@@ -8,8 +8,9 @@ import BlogCreate from "./components/blog/BlogCreate";
 import ReadBlog from "./components/blog/ReadBlog";
 import { useDispatch } from "react-redux";
 import { addUser } from "./components/Redux/Slices/userSlice";
+import UpdateBlog from "./components/blog/UpdateBlog";
 const App = () => {
-  const username = sessionStorage.getItem("username");
+  const username = localStorage.getItem("username");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,6 +33,10 @@ const App = () => {
     {
       path: "/blogRead/:blogId",
       element: <ProtectedRoute Component={ReadBlog}></ProtectedRoute>,
+    },
+    {
+      path: "/update/:blogId",
+      element: <UpdateBlog />,
     },
   ]);
   return <RouterProvider router={router}></RouterProvider>;

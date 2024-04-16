@@ -15,9 +15,9 @@ const createBlog = AsyncHandler(async (req, res) => {
   //get responce from cloudinary
   //create blog object with title, description, author name and image url
   //send to frontend as response
-  const { title, description } = req.body;
+  const { title, description, author } = req.body;
 
-  if ([title, description].some((field) => field.trim() === "")) {
+  if ([title, description, author].some((field) => field.trim() === "")) {
     throw new ApiError(401, "every field required !!!");
   }
   const localFilePath = req.file?.path;
@@ -32,6 +32,7 @@ const createBlog = AsyncHandler(async (req, res) => {
     title: title,
     description: description,
     photo: response.url,
+    author: author,
   });
 
   const createdBlog = await Blog.findOne(blog._id);
@@ -75,4 +76,64 @@ const getParticularBlog = AsyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "get blog successfully !!", result));
 });
 
-export { createBlog, getBlogs, getParticularBlog };
+const updateBlog = AsyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+
+  if (title?.trim() === "" && description?.trim() === "") {
+    throw new ApiError(401, "at least one field is require to update blog");
+  }
+
+  let updatedBlog;
+  const { blogId } = req.params;
+  const localFilePath = req.file?.path;
+  if (localFilePath) {
+    const response = await uploadToCloudinary(localFilePath);
+    updatedBlog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        $set: {
+          title: title,
+          description: description,
+          photo: response.url,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+  } else {
+    updatedBlog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        $set: {
+          title: title,
+          description: description,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+  }
+
+  if (!updatedBlog) {
+    throw new ApiError(401, "blog not found i.e invalid request");
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "blog is updated successfully", updatedBlog));
+});
+
+const deleteBlog = AsyncHandler(async (req, res) => {
+  const { blogId } = req.params;
+  const blog = await Blog.findById(blogId);
+  if (!blog) {
+    return new ApiError(401, "unauthorize request to delete blog");
+  }
+  await Blog.deleteOne({ _id: blog._id });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "blog successfully deleted"));
+});
+
+export { createBlog, getBlogs, getParticularBlog, updateBlog, deleteBlog };

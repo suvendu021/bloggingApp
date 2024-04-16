@@ -17,7 +17,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const cookies = new Cookies();
+  const cookies = new Cookies();
   const api = axios.create({
     baseURL: SERVER,
     withCredentials: true,
@@ -28,8 +28,12 @@ const Header = () => {
     try {
       await api.post("/api/v1/users/logout");
       dispatch(removeUser());
-      sessionStorage.removeItem("username");
+      localStorage.removeItem("username");
       navigate("/");
+      const cookieKeys = Object.keys(cookies.getAll());
+      cookieKeys.forEach((key) => {
+        cookies.remove(key);
+      });
     } catch (error) {
       console.error("Logout failed:", error);
     }

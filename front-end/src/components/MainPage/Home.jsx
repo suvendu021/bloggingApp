@@ -12,9 +12,9 @@ const Home = () => {
   const blogs = fetchedBlogs?.data;
 
   return (
-    <div>
+    <div className="h-dvh">
       <Header />
-      <div className="flex justify-center items-center md:mt-[8%] mt-[27%]">
+      <div className="flex justify-center items-center md:mt-[8%] mt-[27%] min-h-[30vh]">
         <Link to={"/blog"}>
           <button className="bg-black text-white p-2 rounded-lg">
             Create Blog
@@ -44,6 +44,7 @@ const Home = () => {
           </>
         )}
       </div>
+
       <Footer />
     </div>
   );
