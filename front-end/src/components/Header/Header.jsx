@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { removeUser } from "../Redux/Slices/userSlice";
@@ -8,38 +9,35 @@ import { SERVER } from "../../utils/Constant";
 
 const Header = () => {
   const { user } = useSelector((store) => store.user);
+  // console.log(user);
   const [showMenuBtn, setShowMenuBtn] = useState(true);
+  const handleMenu = () => {
+    setShowMenuBtn(!showMenuBtn);
+  };
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const cookies = new Cookies();
-
-  const handleMenu = () => {
-    setShowMenuBtn(!showMenuBtn);
-  };
-
+  const api = axios.create({
+    baseURL: SERVER,
+    withCredentials: true,
+  });
+  // const accessToken = sessionStorage.getItem("accessToken");
+  // console.log(accessToken);
   const handlesignOut = async () => {
     try {
-      const response = await fetch(`${SERVER}/api/v1/users/logout`, {
-        method: "POST",
-        credentials: "include",
+      await api.post("/api/v1/users/logout");
+      dispatch(removeUser());
+      localStorage.removeItem("username");
+      navigate("/");
+      const cookieKeys = Object.keys(cookies.getAll());
+      cookieKeys.forEach((key) => {
+        cookies.remove(key);
       });
-      if (response.ok) {
-        dispatch(removeUser());
-        localStorage.removeItem("username");
-        navigate("/");
-        const cookieKeys = Object.keys(cookies.getAll());
-        cookieKeys.forEach((key) => {
-          cookies.remove(key);
-        });
-      } else {
-        throw new Error("Logout failed");
-      }
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
-
   return (
     <div>
       <nav className="bg-black text-white flex justify-between p-3 m-0 h-20">
