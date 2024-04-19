@@ -26,7 +26,7 @@ const Header = () => {
   // console.log(accessToken);
   const handlesignOut = async () => {
     try {
-      await api.post("/api/v1/users/logout");
+      await api.post("/api/v1/users/logout", {});
       dispatch(removeUser());
       localStorage.removeItem("username");
       navigate("/");
