@@ -22,11 +22,19 @@ const Header = () => {
     baseURL: SERVER,
     withCredentials: true,
   });
-  // const accessToken = sessionStorage.getItem("accessToken");
-  // console.log(accessToken);
+  const accessToken = cookies.get("accessToken");
+
   const handlesignOut = async () => {
     try {
-      await api.post("/api/v1/users/logout", {});
+      await api.post(
+        "/api/v1/users/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       dispatch(removeUser());
       localStorage.removeItem("username");
       navigate("/");
