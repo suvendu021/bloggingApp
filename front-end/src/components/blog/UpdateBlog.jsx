@@ -38,7 +38,11 @@ const UpdateBlog = () => {
 
       if (Object.keys(data).length > 0) {
         // Send the data only if there is at least one field with a value
-        await axios.patch(`${SERVER}/api/v1/blogs/update/${blogId}`, data);
+        await axios.patch(`${SERVER}/api/v1/blogs/update/${blogId}`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         navigate("/home");
         toast.success("successfully updated !!!");
       } else {

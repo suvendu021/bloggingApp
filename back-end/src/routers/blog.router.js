@@ -12,7 +12,7 @@ const blogRouter = Router();
 blogRouter.route("/createBlog").post(upload.single("photo"), createBlog);
 blogRouter.route("/getBlogs").get(getBlogs);
 blogRouter.route("/blogRead/:blogId").get(getParticularBlog);
-blogRouter.route("/update/:blogId").patch(updateBlog);
+blogRouter.route("/update/:blogId").patch(upload.single("photo"), updateBlog);
 blogRouter.route("/delete/:blogId").delete(deleteBlog);
 
 export { blogRouter };
