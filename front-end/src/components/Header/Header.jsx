@@ -6,6 +6,7 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { removeUser } from "../Redux/Slices/userSlice";
 import { SERVER } from "../../utils/Constant";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const { user } = useSelector((store) => store.user);
@@ -38,6 +39,7 @@ const Header = () => {
       dispatch(removeUser());
       localStorage.removeItem("username");
       navigate("/");
+      toast.success("LogOut successfully !!!");
       const cookieKeys = Object.keys(cookies.getAll());
       cookieKeys.forEach((key) => {
         cookies.remove(key);

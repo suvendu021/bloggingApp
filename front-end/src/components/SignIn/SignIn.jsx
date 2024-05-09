@@ -9,9 +9,12 @@ import Cookies from "universal-cookie";
 import { SERVER } from "../../utils/Constant";
 import { useDispatch } from "react-redux";
 import { addUser } from "../Redux/Slices/userSlice";
+import LoadingEffect from "../../utils/LoadingEffect";
+import toast from "react-hot-toast";
 
 const SignIn = () => {
   const [isSignnedUp, setIsSignnedUp] = useState(true);
+  const [loading, setloading] = useState(false);
   const [message, setMessage] = useState(null);
   const handleSignInBtn = () => {
     setIsSignnedUp(!isSignnedUp);
@@ -53,6 +56,8 @@ const SignIn = () => {
     }
     setMessage(null);
 
+    setloading(true);
+
     if (isSignnedUp) {
       // For sign-in, call the login endpoint
 
@@ -71,6 +76,7 @@ const SignIn = () => {
         dispatch(addUser(user));
         cookies.set("accessToken", accessToken);
         navigate("/home");
+        toast.success("successfully LogIn !!!");
       } catch (error) {
         console.error("Login error:", error);
 
@@ -112,9 +118,11 @@ const SignIn = () => {
         }
       }
     }
+    setloading(false);
   };
   return (
     <div className="h-screen">
+      {loading && <LoadingEffect />}
       <Header />
       <form
         encType="multipart/form-data"

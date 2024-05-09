@@ -3,15 +3,19 @@ import React, { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { SERVER } from "../../utils/Constant";
 import axios from "axios";
+import LoadingEffect from "../../utils/LoadingEffect";
+import toast from "react-hot-toast";
 
 const UpdateBlog = () => {
   const { blogId } = useParams();
   const navigate = useNavigate();
   const [errMessage, setErrMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const imageRef = useRef(null);
   const handleSaveBlog = async () => {
+    setLoading(true);
     try {
       const data = {};
 
@@ -36,6 +40,7 @@ const UpdateBlog = () => {
         // Send the data only if there is at least one field with a value
         await axios.patch(`${SERVER}/api/v1/blogs/update/${blogId}`, data);
         navigate("/home");
+        toast.success("successfully updated !!!");
       } else {
         setErrMessage("plz enter atleast one field to update it !!!");
       }
@@ -51,10 +56,12 @@ const UpdateBlog = () => {
         setErrMessage("An error occurred. Please try again later.");
       }
     }
+    setLoading(false);
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100 ">
+      {loading && <LoadingEffect />}
       <form
         className="md:w-1/2 w-4/5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         encType="multipart/form-data"

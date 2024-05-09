@@ -6,6 +6,7 @@ import { useFetchParticularBlog } from "../hooks/useFetchParticularBlog";
 import { SERVER } from "../../utils/Constant";
 import UpdateBlog from "./UpdateBlog";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const ReadBlog = () => {
   const idData = useParams();
@@ -19,6 +20,7 @@ const ReadBlog = () => {
   const handleBlogDelete = async () => {
     const data = await axios.delete(`${SERVER}/api/v1/blogs/delete/${blogId}`);
     navigate("/home");
+    toast.success("successfully blog deleted");
   };
 
   if (!currentBlog) {
